@@ -2,9 +2,10 @@ import math
 import random
 import matplotlib.pyplot as plt
 import numpy as np
+import argparse
 
 
-def load_e(file_name, precision=2_000_000):
+def load_e(file_name, precision):
     e = 2
     with open(file_name, "r") as file:
         e = file.read().replace('\n', '')
@@ -51,7 +52,7 @@ def chi_squared_test(e_value, precision):
 
 #     for digit in e_value:
 #         digit_counts[digit] += 1
-    
+
 #     exp_function = np.arange(1, precision + 1) / precision
 #     th_function = np.arange(1, precision + 1) / (precision + 1)
 #     ks_statistic = np.max(np.abs(exp_function - th_function))
@@ -71,22 +72,25 @@ def chi_squared_test(e_value, precision):
 def est_poker(main):
     return len(set(main)) == 1
 
+
 def est_carre(main):
     return len(set(main)) == 2
+
 
 def est_full(main):
     return len(set(main)) == 2 and main.count(main[0]) in [2, 3]
 
+
 def est_brelan(main):
     return len(set(main)) == 3
+
 
 def est_double_paire(main):
     return len(set(main)) == 3 and len([x for x in set(main) if main.count(x) == 2]) == 2
 
+
 def est_paire(main):
     return len(set(main)) == 4
-
-
 
 
 def poker_test(e_value, precision):
@@ -95,7 +99,7 @@ def poker_test(e_value, precision):
         'Carre': 0,
         'Full': 0,
         'Brelan': 0,
-        'Double Paire':0,
+        'Double Paire': 0,
         'Paire': 0,
     }
 
@@ -122,14 +126,53 @@ def poker_test(e_value, precision):
     plt.show()
 
 
+def test_all(e_value, precision):
+    test_functions = [func for func_name,
+                      func in available_tests.items() if func_name != 'all']
+    for func in test_functions:
+        func(e_value, precision)
+
+
+available_tests = {
+    'chi': chi_squared_test,
+    'poker': poker_test,
+    'all': test_all,
+}
+
 
 def main():
-    # precision = 2_000_000
-    precision = 100000
-    e = str(load_e("e2M.txt", precision))
-    print(f"Value : {e}")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--test', default='all',
+                        help='Test to use to study randomness of e')
+    parser.add_argument('--precision', type=int,
+                        default=2_000_000, help='Precision value')
+    parser.add_argument('--list', action='store_true',
+                        help='Lists available tests', default=False)
+    args = parser.parse_args()
 
-    poker_test(e, precision)
+    list_tests = args.list
+    if list_tests:
+        print("Availble Tests")
+        print(list(available_tests.keys()))
+        exit(0)
+
+    precision = args.precision
+
+    if precision <= 0 or precision > 2_000_000:
+        print(f"Precision must be between 0 and 2_000_000")
+        exit(1)
+
+    test_to_use = args.test
+    test_function = available_tests.get(test_to_use)
+
+    if test_function is None:
+        print(f"{test_to_use} is not available")
+        exit(1)
+
+    e = str(load_e("e2M.txt", precision))
+    print(f"Args : {args.test} with precision {precision}")
+    test_function(e, precision)
+
 
 if __name__ == '__main__':
     main()
