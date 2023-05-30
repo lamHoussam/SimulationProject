@@ -2,6 +2,7 @@ import math
 import random
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.stats import kstest
 import argparse
 
 
@@ -69,60 +70,76 @@ def chi_squared_test(e_value, precision):
 #     ax.legend()
 #     plt.show()
 
-def est_poker(main):
-    return len(set(main)) == 1
+def evaluate_hand(hand):
+    hand_set = set(hand)
+    if len(hand_set) == 1:
+        return 'Poker'
+    elif len(hand_set) == 2 and hand.count(hand[0]) in [2, 3]:
+        return 'Full'
+    elif len(hand_set) == 3 and len([x for x in hand_set if hand.count(x) == 2]) == 2:
+        return 'Double Paire'
+    elif len(hand_set) == 3:
+        return 'Brelan'
+    elif len(hand_set) == 4:
+        return 'Paire'
+    else:
+        return 'None'
 
-
-def est_carre(main):
-    return len(set(main)) == 2
-
-
-def est_full(main):
-    return len(set(main)) == 2 and main.count(main[0]) in [2, 3]
-
-
-def est_brelan(main):
-    return len(set(main)) == 3
-
-
-def est_double_paire(main):
-    return len(set(main)) == 3 and len([x for x in set(main) if main.count(x) == 2]) == 2
-
-
-def est_paire(main):
-    return len(set(main)) == 4
-
+# TODO: Use caching
+def stirling_number(k, r):
+    return 1 if r == 1 or r == k else stirling_number(k-1, r-1) + r * stirling_number(k-1, r)
 
 def poker_test(e_value, precision):
     classes_occurences = {
-        'Poker': 0,
-        'Carre': 0,
-        'Full': 0,
-        'Brelan': 0,
-        'Double Paire': 0,
-        'Paire': 0,
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+    }
+
+    expected_occurences = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
     }
 
     groups = [e_value[i:i+5] for i in range(0, precision, 5)]
 
+    n = 0
     for hand in groups:
-        if est_poker(hand):
-            classes_occurences['Poker'] += 1
-        elif est_carre(hand):
-            classes_occurences['Carre'] += 1
-        elif est_full(hand):
-            classes_occurences['Full'] += 1
-        elif est_brelan(hand):
-            classes_occurences['Brelan'] += 1
-        elif est_double_paire(hand):
-            classes_occurences['Double Paire'] += 1
-        elif est_paire(hand):
-            classes_occurences['Paire'] += 1
+        hand_set = set(hand)
+        classes_occurences[len(hand_set)] += 1
+        n += 1
 
-    plt.bar(list(classes_occurences.keys()), list(classes_occurences.values()))
-    plt.xlabel('Classe de poker')
-    plt.ylabel('Occurrences')
-    plt.title('Occurrences des classes de poker dans les décimales de e')
+
+    d = 10
+    k = 5
+
+    for r in range(1, k+1):
+        coeff = stirling_number(k, r)
+        for val in range(d-r+1, d+1):
+            coeff *= val
+        expected_occurences[r] = n * (coeff) / (d ** k)
+
+    chi_squared = 0
+    for key in classes_occurences.keys():
+        value =  ((classes_occurences[key] - expected_occurences[key]) ** 2)  / (expected_occurences[key] if expected_occurences[key] != 0 else 1)
+        print(f"Value for key {key}: {value}")
+        chi_squared += value
+
+    print(f"Observed: {classes_occurences}; \nExpected: {expected_occurences}")
+
+    print(f"Chi-square: {chi_squared}")
+
+    fig, ax = plt.subplots()
+
+    ax.bar(list(classes_occurences.keys()), list(classes_occurences.values()), label='Occurrences des classes de poker dans les décimales de e')
+    ax.plot(list(expected_occurences.keys()), list(expected_occurences.values()), 'r-', label='Fréquences attendues')
+    ax.set_xlabel('Classe de poker')
+    ax.set_ylabel('Occurrences')
     plt.show()
 
 
@@ -172,6 +189,7 @@ def main():
     e = str(load_e("e2M.txt", precision))
     print(f"Args : {args.test} with precision {precision}")
     test_function(e, precision)
+    # print(f"value : {e}")
 
 
 if __name__ == '__main__':
