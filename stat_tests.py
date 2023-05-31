@@ -3,6 +3,16 @@ from scipy.stats import kstest
 
 
 def chi_squared_test(sequence, is_digit_sequence=True):
+    """
+    Effectue un test du chi-deux sur une séquence de nombres.
+
+    Args:
+        sequence (list): La séquence de nombres à tester.
+        is_digit_sequence (bool, optional): Indique si la séquence est composée de chiffres ou de nombres décimaux.
+                                            Par défaut, la séquence est considérée comme une séquence de chiffres.
+
+    """
+
     created_sequence = list()
     if not is_digit_sequence:
         for i in sequence:
@@ -42,6 +52,16 @@ def chi_squared_test(sequence, is_digit_sequence=True):
 
 
 def ks_test(sequence, is_digit_sequence=True):
+    """
+    Effectue un test de Kolmogorov-Smirnov sur une séquence de nombres.
+
+    Args:
+        sequence (list): La séquence de nombres à tester.
+        is_digit_sequence (bool, optional): Indique si la séquence est composée de chiffres ou de nombres décimaux.
+                                            Par défaut, la séquence est considérée comme une séquence de chiffres.
+
+    """
+
     sequence.sort()
     n = len(sequence)
 
@@ -58,6 +78,16 @@ def stirling_number(k, r):
 
 
 def poker_test(sequence, is_digit_sequence=True):
+    """
+    Effectue un test de poker sur une séquence de nombres.
+
+    Args:
+        sequence (list): La séquence de nombres à tester.
+        is_digit_sequence (bool, optional): Indique si la séquence est composée de chiffres ou de nombres décimaux.
+                                            Par défaut, la séquence est considérée comme une séquence de chiffres.
+
+    """
+
     classes_occurences = {
         1: 0,
         2: 0,

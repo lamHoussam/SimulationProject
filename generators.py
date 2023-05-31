@@ -30,7 +30,17 @@ def are_coprime(a, b):
 
 
 class LCERandomGenerator():
+
     def __init__(self, seed, e_value, precision):
+        """
+        Initialise un générateur de nombres aléatoires basé sur l'algorithme LCM (Linear Congruential Method) en utilisant les decimales de e.
+
+        Args:
+            seed (int): La valeur initiale (graine) du générateur.
+            e_value (str): La valeur de e utilisée pour générer les nombres aléatoires.
+            precision (int): La précision du générateur, déterminant le nombre de decimales de e.
+
+        """
         self.initial_seed = seed
         self.last_value = seed
         self.last_calculated_index = seed
@@ -55,6 +65,14 @@ class LCERandomGenerator():
         self.e_value = e_value
 
     def generate_random(self):
+        """
+        Génère un nombre aléatoire.
+
+        Returns:
+            float: Un nombre aléatoire entre 0 et 1.
+
+        """
+
         calculated_index = (self.last_calculated_index *
                             self.a + self.c) % self.m
         value = int(
@@ -66,6 +84,16 @@ class LCERandomGenerator():
 
 class ESimpleRandomGenerator():
     def __init__(self, seed, e_value, precision):
+        """
+        Initialise un générateur de nombres aléatoires basé sur les decimales de e.
+
+        Args:
+            seed (int): La valeur initiale (graine) du générateur.
+            e_value (str): La valeur de e utilisée pour générer les nombres aléatoires.
+            precision (int): La précision du générateur, déterminant le nombre de decimales de e.
+
+        """
+
         self.precision = precision
         self.initial_seed = seed % precision
         self.last_value = seed % precision
@@ -74,6 +102,14 @@ class ESimpleRandomGenerator():
         self.decimals = 10
 
     def generate_random(self):
+        """
+        Génère un nombre aléatoire.
+
+        Returns:
+            float: Un nombre aléatoire entre 0 et 1.
+
+        """
+
         beg_val = self.last_calculated_index
         fin_val = self.last_calculated_index + self.decimals
 
