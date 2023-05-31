@@ -37,9 +37,8 @@ def chi_squared_test(sequence, is_digit_sequence=True):
     sum_value = sum(observed_frequencies)
 
     print("Test du chi-deux :")
-    print(f"Statistique du test : {chi_squared}")
-    print(f"Sum value: {sum_value} and precision: {length}")
-    print(f"Dictionay: {digit_counts}")
+    print(f"Observed: {digit_counts}\nExpected: {expected_frequencies}")
+    print(f"Statistique du test chi-deux : {chi_squared}")
 
     _, ax = plt.subplots()
     x = list(digit_counts.keys())
@@ -111,16 +110,14 @@ def poker_test(sequence, is_digit_sequence=True):
     else:
         created_sequence = list(sequence)
 
-
     length = len(created_sequence)
 
     groups = [created_sequence[i:i+5] for i in range(0, length, 5)]
 
-    n = 0
+    n = length // 5
     for hand in groups:
         hand_set = set(hand)
         classes_occurences[len(hand_set)] += 1
-        n += 1
 
     d = 10
     k = 5
@@ -135,12 +132,11 @@ def poker_test(sequence, is_digit_sequence=True):
     for key in classes_occurences.keys():
         value = ((classes_occurences[key] - expected_occurences[key]) ** 2) / (
             expected_occurences[key] if expected_occurences[key] != 0 else 1)
-        print(f"Value for key {key}: {value}")
+        # print(f"Value for key {key}: {value}")
         chi_squared += value
 
     print(f"Observed: {classes_occurences}; \nExpected: {expected_occurences}")
-
-    print(f"Chi-square: {chi_squared}")
+    print(f"Statistique du test du poker: {chi_squared}")
 
     fig, ax = plt.subplots()
 

@@ -1,6 +1,8 @@
 import random
 import argparse
 
+import matplotlib.pyplot as plt
+
 from stat_tests import ks_test, chi_squared_test, poker_test
 from generators import ESimpleRandomGenerator, LCERandomGenerator
 
@@ -28,7 +30,7 @@ available_tests = {
 }
 
 available_generators = {
-    'lcm'   : LCERandomGenerator,
+    'lcm': LCERandomGenerator,
     'simple': ESimpleRandomGenerator,
 }
 
@@ -44,7 +46,8 @@ def main():
                         help='Lists available tests and available generators', default=False)
     parser.add_argument('--generate', default=0, type=int,
                         help='Generate values using the custom random generator')
-    parser.add_argument('--seed', help='Seed for custom RNG', default=1, type=int)
+    parser.add_argument(
+        '--seed', help='Seed for custom RNG', default=1, type=int)
 
     parser.add_argument('--generator', default='lcm',
                         help='Random number Generator to use')
@@ -75,7 +78,8 @@ def main():
 
         generator_class = available_generators.get(args.generator)
         if generator_class is None:
-            print("Can't find this generator\nUse python main.py --list \nto see available generators")
+            print(
+                "Can't find this generator\nUse python main.py --list \nto see available generators")
             exit(1)
 
         generator = generator_class(args.seed, e, precision)
@@ -94,9 +98,32 @@ def main():
 
         with open("python_output.txt", "w") as f:
             f.write(str(python_random_numbers))
-    elif args.test == 'ks':
-            print(f"Cant use ks to study decimals of e")
+
+        plt.hist(custom_random_numbers, bins=20,
+                 alpha=0.5, label='Your Generator')
+        plt.hist(python_random_numbers, bins=20,
+                 alpha=0.5, label='random Module')
+        plt.xlabel('Random Number')
+        plt.ylabel('Frequency')
+        plt.title('Comparison of Random Number Generators')
+        plt.legend()
+        plt.show()
+
+        test_to_use = args.test
+        test_function = available_tests.get(test_to_use)
+
+        if test_function is None:
+            print(f"{test_to_use} is not available")
             exit(1)
+
+        test_function(custom_random_numbers, not args.generate)
+        test_function(python_random_numbers, not args.generate)
+
+        return
+
+    if args.test == 'ks':
+        print(f"Cant use ks to study decimals of e")
+        exit(1)
 
     test_to_use = args.test
     test_function = available_tests.get(test_to_use)
