@@ -2,11 +2,11 @@ import matplotlib.pyplot as plt
 from scipy.stats import kstest
 
 
-def chi_squared_test(sequence, is_digit_sequence = True):
+def chi_squared_test(sequence, is_digit_sequence=True):
     created_sequence = list()
     if not is_digit_sequence:
         for i in sequence:
-            created_sequence.append(int(i * 10))
+            created_sequence.append(str(int(i * 10)))
     else:
         created_sequence = list(sequence)
 
@@ -44,9 +44,9 @@ def chi_squared_test(sequence, is_digit_sequence = True):
 def ks_test(sequence):
     sequence.sort()
     n = len(sequence)
-    
+
     d_value, p_value = kstest(sequence, 'uniform')
-        
+
     print("Test de Kolmogorov-Smirnov :")
     print(f"D_value : {d_value}")
     print(f"P_value : {p_value}")
@@ -84,7 +84,6 @@ def poker_test(sequence):
         classes_occurences[len(hand_set)] += 1
         n += 1
 
-
     d = 10
     k = 5
 
@@ -96,7 +95,8 @@ def poker_test(sequence):
 
     chi_squared = 0
     for key in classes_occurences.keys():
-        value =  ((classes_occurences[key] - expected_occurences[key]) ** 2)  / (expected_occurences[key] if expected_occurences[key] != 0 else 1)
+        value = ((classes_occurences[key] - expected_occurences[key]) ** 2) / (
+            expected_occurences[key] if expected_occurences[key] != 0 else 1)
         print(f"Value for key {key}: {value}")
         chi_squared += value
 
@@ -106,8 +106,10 @@ def poker_test(sequence):
 
     fig, ax = plt.subplots()
 
-    ax.bar(list(classes_occurences.keys()), list(classes_occurences.values()), label='Occurrences des classes de poker dans les décimales de e')
-    ax.plot(list(expected_occurences.keys()), list(expected_occurences.values()), 'r-', label='Fréquences attendues')
+    ax.bar(list(classes_occurences.keys()), list(classes_occurences.values()),
+           label='Occurrences des classes de poker dans les décimales de e')
+    ax.plot(list(expected_occurences.keys()), list(
+        expected_occurences.values()), 'r-', label='Fréquences attendues')
     ax.set_xlabel('Classe de poker')
     ax.set_ylabel('Occurrences')
     plt.show()

@@ -24,10 +24,10 @@ def test_all(sequence):
 
 
 available_tests = {
-    'chi'  : chi_squared_test,
+    'chi': chi_squared_test,
     'poker': poker_test,
-    'ks'   : ks_test,
-    'all'  : test_all,
+    'ks': ks_test,
+    'all': test_all,
 }
 
 
@@ -41,6 +41,7 @@ def main():
                         help='Lists available tests', default=False)
     parser.add_argument('--generate', action='store_true',
                         help='Generate values using the custom random generator', default=False)
+    parser.add_argument('--seed', help='Seed for custom RNG', default=1, type=int)
 
     args = parser.parse_args()
 
@@ -58,23 +59,24 @@ def main():
 
     e = str(load_e("e2M.txt", precision))
 
-    data = e
-
+    custom_random_numbers = e
     if args.generate:
-        generator = LCERandomGenerator(1, e, precision)
+        generator = LCERandomGenerator(args.seed, e, precision)
         python_random_numbers = list()
         custom_random_numbers = list()
 
         for _ in range(1000):
             val = generator.generate_random()
             py_val = random.random()
-            
-            print(f"Py val : {py_val}")
-            print(f"Cs val : {val}")
 
             custom_random_numbers.append(val)
             python_random_numbers.append(py_val)
 
+        with open("custom_output.txt", "w") as f:
+            f.write(str(custom_random_numbers))
+
+        with open("python_output.txt", "w") as f:
+            f.write(str(python_random_numbers))
 
     test_to_use = args.test
     test_function = available_tests.get(test_to_use)
@@ -86,7 +88,7 @@ def main():
     # print(f"Args : {args.test} with precision {precision}")
     # print(f"value : {e}")
 
-    test_function(e)
+    chi_squared_test(custom_random_numbers, not args.generate)
 
 
 if __name__ == '__main__':
