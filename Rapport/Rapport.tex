@@ -1,0 +1,72 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+
+\begin{document}
+
+\title{Étude du Caractère Pseudo-aléatoire des Décimales de \(e\) par le Test du Chi-deux}
+\author{LAMLIH Houssam}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+Le nombre \(e\) est une constante mathématique importante qui représente la base du logarithme naturel. Les décimales de \(e\) ont été étudiées avec intérêt pour leur nature pseudo-aléatoire. Dans ce rapport, nous utilisons le test du chi-deux pour évaluer si les décimales de \(e\) présentent des propriétés pseudo-aléatoires.
+
+\section{Méthodologie}
+
+\subsection{Comptage des chiffres}
+
+Nous initialisons un dictionnaire pour compter les occurrences de chaque chiffre de 0 à 9 dans les décimales de \(e\). En parcourant chaque chiffre de \(e\), nous mettons à jour les comptes dans le dictionnaire.
+
+\subsection{Calcul des fréquences attendues}
+
+Le nombre total de décimales de \(e\) est calculé. Ensuite, les fréquences attendues pour chaque chiffre sont calculées en supposant une répartition uniforme (1/10 pour chaque chiffre).
+
+\subsection{Test du chi-deux}
+
+Le test du chi-deux est utilisé pour évaluer la similarité entre les fréquences observées et les fréquences attendues. La statistique du test du chi-deux est calculée en sommant les carrés des différences normalisées entre les fréquences observées et les fréquences attendues.
+
+\section{Résultats}
+
+\subsection{Statistique du test du chi-deux}
+
+La statistique du test du chi-deux obtenue pour les décimales de \(e\) est de \(X = XXX\), où \(X\) représente la valeur calculée. Cette statistique mesure la différence entre les fréquences observées et les fréquences attendues.
+
+\subsection{Graphique des fréquences observées et attendues}
+
+\begin{center}
+\begin{tikzpicture}
+% \begin{axis}[
+    % ybar,
+    % enlargelimits=0.15,
+    % ylabel={Fréquence},
+    % xlabel={Chiffre},
+    % symbolic x coords={0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+    % xtick=data,
+    % nodes near coords,
+    % nodes near coords align={vertical},
+    % ]
+% \addplot coordinates {(0, X) (1, X) (2, X) (3, X) (4, X) (5, X) (6, X) (7, X) (8, X) (9, X)};
+% \addplot coordinates {(0, X) (1, X) (2, X) (3, X) (4, X) (5, X) (6, X) (7, X) (8, X) (9, X)};
+% \legend{Fréquences observées, Fréquences attendues}
+% \end{axis}
+\end{tikzpicture}
+\end{center}
+
+Le graphique ci-dessus montre les fréquences observées des chiffres dans les décimales de \(e\) ainsi que les fréquences attendues (uniformes) pour chaque chiffre.
+
+\section{Discussion}
+
+Le test du chi-deux nous permet d'évaluer la similarité entre les fréquences observées et les fréquences attendues. Une statistique du test du chi-deux plus élevée suggère une plus grande différence entre les fréquences observées et attendues, indiquant un caractère moins pseudo-aléatoire des décimales de \(e\).
+
+Dans notre cas, la statistique du test du chi-deux obtenue est \(X = XXX\). Il serait nécessaire d'évaluer cette valeur par rapport à un seuil de signification approprié pour tirer des conclusions plus définitives sur le caractère pseudo-aléatoire des décimales de \(e\).
+
+\section{Conclusion}
+
+En utilisant le test du chi-deux, nous avons étudié le caractère pseudo-aléatoire des décimales de \(e\). La statistique du test du chi-deux et le graphique des fréquences observées et attendues fournissent des informations sur la similarité entre les fréquences observées et les fréquences attendues.
+
+Cependant, des recherches supplémentaires et une évaluation statistique plus approfondie seraient nécessaires pour tirer des conclusions solides sur le caractère pseudo-aléatoire des décimales de \(e\).
+
+\end{document}
