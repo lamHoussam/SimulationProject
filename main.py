@@ -1,7 +1,4 @@
-import math
 import random
-import matplotlib.pyplot as plt
-from scipy.stats import kstest
 import argparse
 
 from stat_tests import ks_test, chi_squared_test, poker_test
@@ -30,18 +27,27 @@ available_tests = {
     'all': test_all,
 }
 
+available_generators = {
+    'lcm'   : LCERandomGenerator,
+    'simple': ESimpleRandomGenerator,
+}
+
 
 def main():
     parser = argparse.ArgumentParser()
+
     parser.add_argument('--test', default='all',
                         help='Test to use to study randomness of e')
     parser.add_argument('--precision', type=int,
                         default=2_000_000, help='Precision value')
     parser.add_argument('--list', action='store_true',
-                        help='Lists available tests', default=False)
+                        help='Lists available tests and available generators', default=False)
     parser.add_argument('--generate', default=0, type=int,
                         help='Generate values using the custom random generator')
     parser.add_argument('--seed', help='Seed for custom RNG', default=1, type=int)
+
+    parser.add_argument('--generator', default='lcm',
+                        help='Random number Generator to use')
 
     args = parser.parse_args()
 
@@ -49,6 +55,8 @@ def main():
     if list_tests:
         print("Availble Tests")
         print(list(available_tests.keys()))
+        print("Available Generators")
+        print(list(available_generators.keys()))
         exit(0)
 
     precision = args.precision
@@ -65,7 +73,12 @@ def main():
             print(f"Max Generation 200_000")
             exit(1)
 
-        generator = LCERandomGenerator(args.seed, e, precision)
+        generator_class = available_generators.get(args.generator)
+        if generator_class is None:
+            print("Can't find this generator\nUse python main.py --list \nto see available generators")
+            exit(1)
+
+        generator = generator_class(args.seed, e, precision)
         python_random_numbers = list()
         custom_random_numbers = list()
 

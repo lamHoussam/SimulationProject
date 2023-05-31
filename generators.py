@@ -66,15 +66,24 @@ class LCERandomGenerator():
 
 class ESimpleRandomGenerator():
     def __init__(self, seed, e_value, precision):
-        self.initial_seed = seed
-        self.last_value = seed
+        self.precision = precision
+        self.initial_seed = seed % precision
+        self.last_value = seed % precision
         self.last_calculated_index = seed % precision
         self.e_value = e_value
         self.decimals = 10
 
     def generate_random(self):
-        value = int(
-            self.e_value[self.last_calculated_index:self.last_calculated_index + self.decimals]) / (10 ** self.decimals)
+        beg_val = self.last_calculated_index
+        fin_val = self.last_calculated_index + self.decimals
+
+        if fin_val >= self.precision:
+            beg_val = 0
+            fin_val = beg_val + self.decimals
+
+        decimals = self.e_value[beg_val:fin_val]
+
+        value = int(decimals) / (10 ** self.decimals)
 
         self.last_calculated_index += self.decimals
         self.last_value = value
