@@ -16,11 +16,11 @@ def load_e(file_name, precision):
     return e[2:precision+2]
 
 
-def test_all(sequence):
+def test_all(sequence, is_digit_sequence=True):
     test_functions = [func for func_name,
-                      func in available_tests.items() if func_name != 'all']
+                      func in available_tests.items() if (func_name != 'all' and func_name != 'ks') or (func_name == 'ks' and not is_digit_sequence)]
     for func in test_functions:
-        func(sequence)
+        func(sequence, is_digit_sequence)
 
 
 available_tests = {
@@ -39,8 +39,8 @@ def main():
                         default=2_000_000, help='Precision value')
     parser.add_argument('--list', action='store_true',
                         help='Lists available tests', default=False)
-    parser.add_argument('--generate', action='store_true',
-                        help='Generate values using the custom random generator', default=False)
+    parser.add_argument('--generate', default=0, type=int,
+                        help='Generate values using the custom random generator')
     parser.add_argument('--seed', help='Seed for custom RNG', default=1, type=int)
 
     args = parser.parse_args()
@@ -60,12 +60,16 @@ def main():
     e = str(load_e("e2M.txt", precision))
 
     custom_random_numbers = e
-    if args.generate:
+    if args.generate != 0:
+        if args.generate > 200_000:
+            print(f"Max Generation 200_000")
+            exit(1)
+
         generator = LCERandomGenerator(args.seed, e, precision)
         python_random_numbers = list()
         custom_random_numbers = list()
 
-        for _ in range(1000):
+        for _ in range(args.generate):
             val = generator.generate_random()
             py_val = random.random()
 
@@ -77,6 +81,9 @@ def main():
 
         with open("python_output.txt", "w") as f:
             f.write(str(python_random_numbers))
+    elif args.test == 'ks':
+            print(f"Cant use ks to study decimals of e")
+            exit(1)
 
     test_to_use = args.test
     test_function = available_tests.get(test_to_use)
@@ -85,10 +92,7 @@ def main():
         print(f"{test_to_use} is not available")
         exit(1)
 
-    # print(f"Args : {args.test} with precision {precision}")
-    # print(f"value : {e}")
-
-    chi_squared_test(custom_random_numbers, not args.generate)
+    test_function(custom_random_numbers, not args.generate)
 
 
 if __name__ == '__main__':

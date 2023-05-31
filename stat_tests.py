@@ -41,7 +41,7 @@ def chi_squared_test(sequence, is_digit_sequence=True):
     plt.show()
 
 
-def ks_test(sequence):
+def ks_test(sequence, is_digit_sequence=True):
     sequence.sort()
     n = len(sequence)
 
@@ -57,7 +57,7 @@ def stirling_number(k, r):
     return 1 if r == 1 or r == k else stirling_number(k-1, r-1) + r * stirling_number(k-1, r)
 
 
-def poker_test(sequence):
+def poker_test(sequence, is_digit_sequence=True):
     classes_occurences = {
         1: 0,
         2: 0,
@@ -74,9 +74,17 @@ def poker_test(sequence):
         5: 0,
     }
 
-    length = len(sequence)
+    created_sequence = list()
+    if not is_digit_sequence:
+        for i in sequence:
+            created_sequence.append(str(int(i * 10)))
+    else:
+        created_sequence = list(sequence)
 
-    groups = [sequence[i:i+5] for i in range(0, length, 5)]
+
+    length = len(created_sequence)
+
+    groups = [created_sequence[i:i+5] for i in range(0, length, 5)]
 
     n = 0
     for hand in groups:
